@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "text": "The only true wisdom is in knowing you know nothing.",
+    "author": "Socrates",
+    "source": "Plato's Dialogues",
+    "categories": ["Philosophy"],
+    "date": "2023-01-15"
+  },
+  {
+    "id": 2,
+    "text": "Life is really simple, but we insist on making it complicated.",
+    "author": "Confucius",
+    "source": "Various sources",
+    "categories": ["Life", "Philosophy"],
+    "date": "2023-02-20"
+  }
+]
