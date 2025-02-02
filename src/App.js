@@ -6,32 +6,31 @@ import RandomButton from './components/RandomButton';
 import AddAphorismModal from './components/AddAphorismModal';
 import AphorismDetail from './components/AphorismDetail';
 
-/**
- * App component is the main container for the WiseWords application.
- */
 function App() {
-  // State for all aphorisms loaded from the JSON file
   const [aphorisms, setAphorisms] = useState([]);
-  // State for the list of aphorisms after filtering/searching
   const [filteredAphorisms, setFilteredAphorisms] = useState([]);
-  // State for the current search query
   const [searchQuery, setSearchQuery] = useState('');
-  // State for the selected category filter
   const [selectedCategory, setSelectedCategory] = useState('');
-  // State for toggling the "Add New Aphorism" modal
   const [showAddModal, setShowAddModal] = useState(false);
-  // State for showing the detail view of an aphorism
   const [selectedAphorism, setSelectedAphorism] = useState(null);
 
-  // Fetch aphorisms from the static JSON file when the component mounts
+  // Load aphorisms from localStorage or fallback to the JSON file
   useEffect(() => {
-    fetch('/aphorisms.json')
-      .then((response) => response.json())
-      .then((data) => {
-        setAphorisms(data);
-        setFilteredAphorisms(data);
-      })
-      .catch((error) => console.error('Error fetching aphorisms:', error));
+    const storedAphorisms = localStorage.getItem("aphorisms");
+    if (storedAphorisms) {
+      const parsedAphorisms = JSON.parse(storedAphorisms);
+      setAphorisms(parsedAphorisms);
+      setFilteredAphorisms(parsedAphorisms);
+    } else {
+      fetch('/aphorisms.json')
+        .then((response) => response.json())
+        .then((data) => {
+          setAphorisms(data);
+          setFilteredAphorisms(data);
+          localStorage.setItem("aphorisms", JSON.stringify(data));
+        })
+        .catch((error) => console.error('Error fetching aphorisms:', error));
+    }
   }, []);
 
   // Update filtered aphorisms when search query or category changes
@@ -50,12 +49,12 @@ function App() {
     setFilteredAphorisms(filtered);
   }, [searchQuery, selectedCategory, aphorisms]);
 
-  // Function to add a new aphorism (client-side only)
+  // Function to add a new aphorism and update localStorage
   const addAphorism = (newAphorism) => {
-    // In this demo, assign a new id manually.
     newAphorism.id = aphorisms.length ? aphorisms[aphorisms.length - 1].id + 1 : 1;
     const updatedAphorisms = [...aphorisms, newAphorism];
     setAphorisms(updatedAphorisms);
+    localStorage.setItem("aphorisms", JSON.stringify(updatedAphorisms));
     setShowAddModal(false);
   };
 
@@ -66,7 +65,6 @@ function App() {
     setSelectedAphorism(aphorisms[randomIndex]);
   };
 
-  // Function to close the detail modal
   const closeDetailModal = () => {
     setSelectedAphorism(null);
   };
@@ -109,3 +107,4 @@ function App() {
 }
 
 export default App;
+
